@@ -1,2 +1,1 @@
-# SDCVD
-Sampling Density Compensation based on Voronoi Diagram
+# Sampling Density Compensition base on Voronoi Diagram (SDCVD)
