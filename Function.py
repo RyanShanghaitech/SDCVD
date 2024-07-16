@@ -2,7 +2,7 @@ from numpy import *
 from matplotlib.pyplot import *
 from scipy.spatial import Voronoi, voronoi_plot_2d
 
-def funGetAera(lstVertice):
+def _getAera(lstVertice):
     # Ensure the vertices are a NumPy array for efficient computation
     lstVertice = asarray(lstVertice)
     
@@ -14,7 +14,7 @@ def funGetAera(lstVertice):
     area = 0.5*abs(dot(x, roll(y,1)) - dot(y, roll(x,1)))
     return area
 
-def funGetDs(traj:ndarray) -> tuple[ndarray, Voronoi]:
+def getDs(traj:ndarray) -> tuple[ndarray, Voronoi]:
     numPt = traj.shape[0]
     objVor = Voronoi(traj)
     lstVert = objVor.vertices
@@ -25,5 +25,5 @@ def funGetDs(traj:ndarray) -> tuple[ndarray, Voronoi]:
         if -1 in lstRegion[idxDs]:
             lstDs[idxDs] = 0
         else:
-            lstDs[idxDs] = funGetAera([lstVert[i,:] for i in lstRegion[idxDs]])/lstCntRep[idxDs]
+            lstDs[idxDs] = _getAera([lstVert[i,:] for i in lstRegion[idxDs]])/lstCntRep[idxDs]
     return lstDs, objVor

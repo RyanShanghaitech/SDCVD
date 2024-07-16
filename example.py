@@ -1,7 +1,7 @@
 from numpy import *
 from matplotlib.pyplot import *
-from packSDCVD.modSDCVD import funGetDs
 from scipy.spatial import voronoi_plot_2d
+from Function import *
 
 sizIm = 128
 
@@ -14,15 +14,20 @@ idxKxKy = 0
 for idxTht in range(lstTht.size):
     for idxRho in range(lstRho.size):
         lstKxKy[idxTht,idxRho,:] = [lstRho[idxRho]*cos(lstTht[idxTht]), lstRho[idxRho]*sin(lstTht[idxTht])]
-figure()
-plot(lstKxKy[:,:,0].flatten(), lstKxKy[:,:,1].flatten(), marker=".")
-axis("equal")
-title("Radial trajectory")
 
 # calculate Ds by Voronoi diagram
-lstDs, objVor = funGetDs(lstKxKy.reshape([-1,2]))
+lstDs, objVor = getDs(lstKxKy.reshape([-1,2]))
+
+# plot voronoi diagram
 voronoi_plot_2d(objVor)
-axis("equal")
-title("Voronoi diagram")
+axis("equal"); title("Voronoi diagram"); xlim([0.45, 0.55]); ylim([-0.05, 0.05])
+
+# plot trajectory and Ds
+figure()
+subplot(121)
+plot(lstKxKy[:,:,0].flatten(), lstKxKy[:,:,1].flatten(), marker=".")
+axis("equal"); title("Radial trajectory")
+subplot(122)
+plot(lstDs, marker="."); title("Ds"); xlim([0, sizIm*4])
 
 show()
