@@ -1,7 +1,7 @@
 from numpy import *
 from matplotlib.pyplot import *
 from scipy.spatial import voronoi_plot_2d
-from Function import *
+from sdcvd import *
 
 sizIm = 128
 
