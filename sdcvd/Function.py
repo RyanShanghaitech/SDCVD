@@ -1,28 +1,28 @@
-import numpy as np
+from numpy import *
 from scipy.spatial import Voronoi, voronoi_plot_2d
 
-def _getAera(lstVertice):
+def _getPolygonAera(lstVertice):
     # Ensure the vertices are a NumPy array for efficient computation
-    lstVertice = np.asarray(lstVertice)
+    lstVertice = asarray(lstVertice)
     
     # Extract x and y coordinates
     x = lstVertice[:,0]
     y = lstVertice[:,1]
     
     # Compute the area using the Shoelace formula
-    area = 0.5*np.abs(np.dot(x, np.roll(y,1)) -np. dot(y, np.roll(x,1)))
+    area = 0.5*abs(dot(x, roll(y,1)) - dot(y, roll(x,1)))
     return area
 
-def getDs(traj:np.ndarray) -> tuple[np.ndarray, Voronoi]:
+def getDs(traj:ndarray) -> tuple[ndarray, Voronoi]:
     numPt = traj.shape[0]
     objVor = Voronoi(traj)
     lstVert = objVor.vertices
     lstRegion = [objVor.regions[i] for i in objVor.point_region]
     lstCntRep = [sum(objVor.point_region == objVor.point_region[i]) for i in range(numPt)]
-    lstDs = np.zeros([numPt], dtype=np.float64)
+    lstDs = zeros([numPt], dtype=float64)
     for idxDs in range(numPt):
         if -1 in lstRegion[idxDs]:
             lstDs[idxDs] = 0
         else:
-            lstDs[idxDs] = _getAera([lstVert[i,:] for i in lstRegion[idxDs]])/lstCntRep[idxDs]
+            lstDs[idxDs] = _getPolygonAera([lstVert[i,:] for i in lstRegion[idxDs]])/lstCntRep[idxDs]
     return lstDs, objVor
