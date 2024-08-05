@@ -14,6 +14,17 @@ def _getPolygonAera(lstVertice):
     return area
 
 def getDs(traj:ndarray) -> tuple[ndarray, Voronoi]:
+    """
+    description:
+    Calculate Ds by Voronoi diagram.
+
+    parameters:
+    `traj`: ndarray - trajectory of shape (numPt, 2)
+
+    return:
+    tuple including list of Ds and Voronoi object
+    """
+    assert(traj.ndim == 2 and traj.shape[1] == 2)
     numPt = traj.shape[0]
     objVor = Voronoi(traj)
     lstVert = objVor.vertices
