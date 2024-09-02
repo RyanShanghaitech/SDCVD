@@ -15,7 +15,6 @@ def fixDs(lstDs:ndarray, idxFix:int) -> ndarray:
     assert(lstDs.ndim <= 2)
     if lstDs.ndim == 1: lstDs = lstDs.reshape(1, -1)
     numTrj, numPt = lstDs.shape
-    lstD2s = lstDs[:,idxFix] - lstDs[:,idxFix-1]
-    for idxPt in range(idxFix, numPt):
-        lstDs[:,idxPt] = lstDs[:,idxPt-1] + lstD2s
-    return lstDs.reshape([-1])
+    for idxPt in range(idxFix + 1, numPt):
+        lstDs[:,idxPt] = 2*lstDs[:,idxPt-1] - lstDs[:,idxPt-2]
+    return lstDs
