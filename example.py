@@ -10,8 +10,8 @@ lstKxKy = load("./Resource/trjSpiral.npy")
 numSp, numPt, _ = lstKxKy.shape
 
 # calculate Ds by Voronoi diagram
-lstDs, objVor = getDs(lstKxKy.reshape([-1,2]))
-lstDs = fixDs_Spiral(lstDs, numSp, numPt, int(numPt*0.95))
+lstDs, objVor = getDs(lstKxKy)
+lstDs = fixDs(lstDs, int(numPt*0.95))
 
 # plot voronoi diagram
 voronoi_plot_2d(objVor)

@@ -24,9 +24,9 @@ def getDs(traj:ndarray) -> tuple[ndarray, Voronoi]:
     return:
     tuple including list of Ds and Voronoi object
     """
-    assert(traj.ndim == 2 and traj.shape[1] == 2)
-    numPt = traj.shape[0]
-    objVor = Voronoi(traj)
+    assert(traj.shape[-1] == 2) # only 2D is supported
+    numPt = traj.reshape(-1, 2).shape[0]
+    objVor = Voronoi(traj.reshape(-1, 2))
     lstVert = objVor.vertices
     lstRegion = [objVor.regions[i] for i in objVor.point_region]
     lstCntRep = [sum(objVor.point_region == objVor.point_region[i]) for i in range(numPt)]
@@ -36,4 +36,5 @@ def getDs(traj:ndarray) -> tuple[ndarray, Voronoi]:
             lstDs[idxDs] = 0
         else:
             lstDs[idxDs] = _getPolygonAera([lstVert[i,:] for i in lstRegion[idxDs]])/lstCntRep[idxDs]
+    lstDs = lstDs.reshape(traj.shape[:-1])
     return lstDs, objVor
