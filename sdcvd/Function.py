@@ -1,40 +1,45 @@
 from numpy import *
-from scipy.spatial import Voronoi, voronoi_plot_2d
+from matplotlib.pyplot import *
+from scipy.spatial import Voronoi, ConvexHull, voronoi_plot_2d
 
-def _getPolygonAera(lstVertice):
-    # Ensure the vertices are a NumPy array for efficient computation
-    lstVertice = asarray(lstVertice)
-    
-    # Extract x and y coordinates
-    x = lstVertice[:,0]
-    y = lstVertice[:,1]
-    
-    # Compute the area using the Shoelace formula
-    area = 0.5*abs(dot(x, roll(y,1)) - dot(y, roll(x,1)))
-    return area
-
-def getDs(traj:ndarray) -> tuple[ndarray, Voronoi]:
+def getCompFactor(arrK:ndarray) -> ndarray:
     """
     description:
-    Calculate Ds by Voronoi diagram.
+    Calculate compensation factor by Voronoi diagram.
 
     parameters:
-    `traj`: ndarray - trajectory of shape (numPt, 2)
+    `arrK`: ndarray - trajectory: (trj, pt, ax)
 
     return:
-    tuple including list of Ds and Voronoi object
+    array of compensating factor to be mutiplied with rawdata
     """
-    assert(traj.shape[-1] == 2) # only 2D is supported
-    numPt = traj.reshape(-1, 2).shape[0]
-    objVor = Voronoi(traj.reshape(-1, 2))
-    lstVert = objVor.vertices
-    lstRegion = [objVor.regions[i] for i in objVor.point_region]
-    lstCntRep = [sum(objVor.point_region == objVor.point_region[i]) for i in range(numPt)]
-    lstDs = zeros([numPt], dtype=float64)
-    for idxDs in range(numPt):
-        if -1 in lstRegion[idxDs]:
-            lstDs[idxDs] = 0
-        else:
-            lstDs[idxDs] = _getPolygonAera([lstVert[i,:] for i in lstRegion[idxDs]])/lstCntRep[idxDs]
-    lstDs = lstDs.reshape(traj.shape[:-1])
-    return lstDs, objVor
+    assert arrK.ndim == 3, "arrK shouold be (trj, pt, ax)"
+    dimTrj = arrK.shape[:-1]
+    arrK = arrK.reshape((-1,arrK.shape[-1]))
+    kmax = sqrt((arrK**2).sum(axis=1)).max() # useful for denormalization
+    arrVol = zeros(arrK.shape[0])
+    try:
+        vor = Voronoi(arrK, qhull_options=f"C-1e-15 QbB Q12") # C-1e-15 prevents the precision error compared to C-0, and faster than Qx, QbB normalize the input to reduce precision error, Q12 ignore wide facet error, default"Qbb Qc Qz"
+        # note: 1e-16 and 1e-8 is the precision limit of float64 and float32
+        # note: we don't normalize ourselves, it will still cause error
+        # print("[SUCC] Voronoi")
+        for idxPt in range(vor.npoints):
+            if vor.regions[vor.point_region[idxPt]][0] == -1:
+                arrVol[idxPt] = 0
+            else:
+                arrVol[idxPt] = ConvexHull(vor.vertices[vor.regions[vor.point_region[idxPt]]]).volume
+
+            # handle the case when multiple points share the same cell
+            arrVol[idxPt] /= argwhere(vor.point_region == vor.point_region[idxPt]).size
+
+        # if vor.ndim == 2:
+        #     voronoi_plot_2d(vor)
+        #     axis("equal")
+        #     xlim([-0.5,0.5])
+        #     ylim([-0.5,0.5])
+    except Exception as e:
+        print(f"[ERRO] Voronoi")
+        print(e)
+
+    arrVol *= (kmax/0.5)**arrK.shape[-1] # denormalization
+    return arrVol.reshape(dimTrj)

@@ -1,2 +1,2 @@
-from .Function import getDs
-from .Utility import fixDs
+from .Function import getCompFactor
+from .Utility import fixCompFac, getCompFac_Seg
