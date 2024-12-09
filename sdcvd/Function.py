@@ -2,7 +2,7 @@ from numpy import *
 from matplotlib.pyplot import *
 from scipy.spatial import Voronoi, ConvexHull, voronoi_plot_2d
 
-def getCompFactor(arrK:ndarray) -> ndarray:
+def getCompFac(arrK:ndarray) -> ndarray:
     """
     description:
     Calculate compensation factor by Voronoi diagram.

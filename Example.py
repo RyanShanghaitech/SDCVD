@@ -13,7 +13,7 @@ nPE, nRO, _ = arrK.shape
 # calculate aera by Voronoi diagram
 t = time.time()
 arrCompFac = getCompFac_Seg(arrK.reshape(-1,2), 2/nPix).reshape(nPE, nRO)
-# arrCompFac = getCompFactor(arrK)
+# arrCompFac = getCompFac(arrK)
 arrCompFac = fixCompFac(arrCompFac, nRO*0.9)
 t = time.time() - t
 print(f"time elapsed: {t}s")

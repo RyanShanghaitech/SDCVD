@@ -44,7 +44,7 @@ def getCompFac_Seg(arrK:ndarray, drho:int|float, kmax:int|float=0.5) -> ndarray:
         rhoMax = rho + drho
         arrIdx, = where((arrRho>=rhoMin) & (arrRho<rhoMax))
         _arrIdx, = where((arrRho>=rhoMin-1*drho) & (arrRho<rhoMax+1*drho))
-        _arrCompFac = getCompFactor(arrK[_arrIdx,:][newaxis,:,:]).squeeze()
+        _arrCompFac = getCompFac(arrK[_arrIdx,:][newaxis,:,:]).squeeze()
         arrCompFac[arrIdx] = _arrCompFac[[(idx in arrIdx) for idx in _arrIdx]]
     
     return arrCompFac
