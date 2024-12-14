@@ -4,17 +4,22 @@ from scipy.spatial import voronoi_plot_2d
 from sdcvd import *
 import time
 
-nPix = 1024
+nPix = 128
+# nPix = 1024
 
 # read trajectory
-arrK = load(f"./Resource/arrK_{nPix}.npy")
+arrK = load(f"./Resource/K_{nPix}.npy")
 nPE, nRO, _ = arrK.shape
 
 # calculate aera by Voronoi diagram
 t = time.time()
-arrCompFac = getCompFac_Seg(arrK.reshape(-1,2), 2/nPix).reshape(nPE, nRO)
-# arrCompFac = getCompFac(arrK)
-arrCompFac = fixCompFac(arrCompFac, nRO*0.9)
+fig = figure()
+ax = fig.add_subplot(111)
+lstArrVol = getVol([*arrK], ax)
+ax.axis("equal")
+ax.set_ylim(-0.5,0.5)
+ax.set_xlim(-0.5,0.5)
+lstArrVol = fixVol(lstArrVol, 0.9)
 t = time.time() - t
 print(f"time elapsed: {t}s")
 
@@ -24,6 +29,7 @@ subplot(121)
 for iPE in range(nPE): plot(arrK[iPE,:,0], arrK[iPE,:,1], ".-")
 axis("equal"); title("Spiral2D trajectory")
 subplot(122)
-plot(arrCompFac.reshape([-1]), ".-"); title("Dv")
+for arrVol in lstArrVol:
+    plot(arrVol.reshape([-1]), ".-"); title("vol")
 
 show()

@@ -1,2 +1,2 @@
-from .Function import getCompFac
-from .Utility import fixCompFac, getCompFac_Seg
+from .Function import getVol
+from .Utility import fixVol
