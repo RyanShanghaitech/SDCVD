@@ -1,2 +1,2 @@
-from .Function import getVol
-from .Utility import fixVol
+from .Function import getDcf
+from .Utility import fixDcf

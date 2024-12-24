@@ -1,7 +1,7 @@
 from numpy import *
 from . import *
 
-def fixVol(lstArrVol:list[ndarray], fFix:float) -> ndarray:
+def fixDcf(lstArrVol:list[ndarray], fFix:float) -> ndarray:
     """
     description:
     Fix compensation factor at the boundary of trajectory due to inprecise of Voronoi diagram.

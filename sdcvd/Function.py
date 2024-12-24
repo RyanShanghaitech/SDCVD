@@ -3,7 +3,7 @@ from matplotlib.pyplot import *
 from matplotlib.axes import Axes
 from scipy.spatial import Voronoi, ConvexHull, voronoi_plot_2d
 
-def getVol(lstArrK:list[ndarray], ax:Axes|None=None) -> ndarray:
+def getDcf(lstArrK:list[ndarray], ax:Axes|None=None) -> ndarray:
     """
     description:
     Calculate compensation factor by Voronoi diagram.
@@ -19,11 +19,7 @@ def getVol(lstArrK:list[ndarray], ax:Axes|None=None) -> ndarray:
     arrK = concatenate(lstArrK, axis=0)
     arrVol = zeros(arrK.shape[0])
     try:
-        vor = Voronoi(arrK) #, qhull_options=f"C-1e-15 QbB Q12")
-        # C-1e-15 prevents the precision error compared to C-0, and faster than Qx, QbB normalize the input to reduce precision error, Q12 ignore wide facet error, default"Qbb Qc Qz"
-        # note: 1e-16 and 1e-8 is the precision limit of float64 and float32
-        # note: we don't normalize ourselves, it will still cause error
-        # print("[SUCC] Voronoi")
+        vor = Voronoi(arrK) # , qhull_options="")
         for iPt in range(vor.npoints):
             if vor.regions[vor.point_region[iPt]][0] == -1:
                 arrVol[iPt] = 0
