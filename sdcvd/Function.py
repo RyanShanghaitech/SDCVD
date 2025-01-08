@@ -3,7 +3,7 @@ from matplotlib.pyplot import *
 from matplotlib.axes import Axes
 from scipy.spatial import Voronoi, ConvexHull, voronoi_plot_2d
 
-def getDcf(lstArrK:list[ndarray], ax:Axes|None=None, dictAx:dict|None=None) -> ndarray:
+def getDcf(lstArrK:list[ndarray], ax:Axes|None=None, dictAx:dict=dict()) -> ndarray:
     """
     description:
     Calculate compensation factor by Voronoi diagram.
