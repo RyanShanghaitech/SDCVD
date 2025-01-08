@@ -3,7 +3,7 @@ from matplotlib.pyplot import *
 from matplotlib.axes import Axes
 from scipy.spatial import Voronoi, ConvexHull, voronoi_plot_2d
 
-def getDcf(lstArrK:list[ndarray], ax:Axes|None=None) -> ndarray:
+def getDcf(lstArrK:list[ndarray], ax:Axes|None=None, dictAx:dict|None=None) -> ndarray:
     """
     description:
     Calculate compensation factor by Voronoi diagram.
@@ -11,6 +11,7 @@ def getDcf(lstArrK:list[ndarray], ax:Axes|None=None) -> ndarray:
     parameters:
     `lstArrK`: list of trajectory: (trj, pt, ax)
     `ax`: axes to be plot on, can be None
+    `dictAx`: dictionary of parameters to be passed to voronoi_plot_2d()
 
     return:
     array of compensating factor to be mutiplied with kspace data
@@ -29,7 +30,8 @@ def getDcf(lstArrK:list[ndarray], ax:Axes|None=None) -> ndarray:
             # handle the case when multiple points share the same cell
             arrVol[iPt] /= argwhere(vor.point_region == vor.point_region[iPt]).size
 
-        if ax != None and vor.ndim == 2: voronoi_plot_2d(vor, ax)
+        if ax != None and vor.ndim == 2:
+            voronoi_plot_2d(vor, ax, **dictAx)
     except Exception as e:
         print(f"[ERRO] Voronoi")
         print(e)
